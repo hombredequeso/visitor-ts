@@ -1,0 +1,6 @@
+
+.vscode-test
+coverage
+node_modules
+out
+dist
