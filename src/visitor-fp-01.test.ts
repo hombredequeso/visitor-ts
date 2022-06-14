@@ -17,24 +17,24 @@ const add = (left: Node, right: Node): Add => ({kind: 'add', left:left, right: r
 
 type Node = Integer | Add
 
+const testVisitor = (n: Node): string => {
+    switch (n.kind) {
+        case 'integer': return n.value.toString();
+        case 'add': return '+';
+    }
+}
+
 describe('test visitor fp', () => {
 
     const left: Integer = integer(7)
     const right: Integer = integer(3);
     const addNode: Add = add(left, right);
 
-    const visit = (n: Node): string => {
-        switch (n.kind) {
-            case 'integer': return n.value.toString();
-            case 'add': return '+';
-        }
-    }
-
     test.each([
         [integer(7), '7'],
         [addNode, '+'],
     ])('is equal', (node:Node, expectedResult) => {
-        const result = visit(node);
+        const result = testVisitor(node);
         expect(result).toEqual(expectedResult)
     })
 })
@@ -58,8 +58,9 @@ const graph1 = add(
 )
 
 // New visitor is a ... function(s) :-)
-const displayIntegerNode = (n: Integer): string => 
+const displayIntegerNode = (n: Integer): string =>
     n.value.toString()
+
 const displayAddNode = (n: Add): string =>
     `${displayVisitor(n.left)}+${displayVisitor(n.right)}`
 
@@ -87,14 +88,31 @@ describe('displayVisitor fp', () => {
 })
 
 const calculateIntegerNode = (n: Integer): number => n.value;
-const calculateAddNode = (n: Add): number => calculateVisitor(n.left) + calculateVisitor(n.right);
+const calculateAddNode = (n: Add): number => calculate(n.left) + calculate(n.right);
 
-const calculateVisitor = (n: Node): number => {
+const calculate = (n: Node): number => {
     switch (n.kind) {
         case 'integer': return calculateIntegerNode(n);
         case 'add': return calculateAddNode(n);
     }
 }
+
+describe('calculate fp', () => {
+
+    const node1 = integer(7);
+    const node2 = integer(3);
+    const addNode = add(node1, node2);
+
+    test.each([
+        [integer(7), 7],
+        [addNode, 10],
+        [graph1, 63]
+    ])('is equal', (node, expectedResult) => {
+        const result = calculate(node);
+        expect(result).toEqual(expectedResult)
+    })
+})
+
 const getLongestPathLengthR = (n: Node, currentLength: number): number => {
     switch (n.kind) {
         case 'integer': {
