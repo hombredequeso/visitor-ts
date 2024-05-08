@@ -32,3 +32,29 @@ The main features to draw attention to for the sake of this comparison are:
 
 * The differences in AST structures between object-oriented, in which all node types are coupled together by a common base class/interface, is essentially the oppose to algebraic data types, in which there is no coupling between nodes until they are or'ed together.
 
+This difference can be seen in terms of depedencies.
+In the object-oriented AST, a base class is the mechanism used to provide the polymorphic behaviour. The existence of a base class means that all sub-classes are, by definition, dependent on the base class. Any changes to the base class have the potential to impact on any of the subclasses (although avoiding or at least reducing that impact is part of the rationale behind things like the Liskov substitution principle.)
+
+```mermaid
+classDiagram
+Node <|-- Integer
+Node <|-- Add
+```
+
+In terms of dependencies:
+* Integer is dependent on (knows about) Node
+* Add is dependent on (knows about) Node
+* alterations to Node could impact Integer or Add.
+
+The ADT form of AST, on the other hand, could be seen as inverting this dependency structure
+
+```mermaid
+classDiagram
+Integer <|-- Node
+Add <|-- Node
+```
+
+In terms of dependencies:
+* Integer is not dependent on Node
+* Add is not dependent on Node
+* 

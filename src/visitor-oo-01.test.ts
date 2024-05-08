@@ -1,6 +1,9 @@
 interface Visitor {
     visitInteger(n: Integer): void
     visitAdd(n: Add): void
+
+    // alternatively, implement a runtime typesystem ans just have:
+    // visit(n: Node): void
 }
 
 interface Node {
