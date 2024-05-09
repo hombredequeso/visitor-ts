@@ -1,21 +1,20 @@
-interface Integer
-{
-    readonly kind:'integer'
+type Integer = {
+    readonly kind:'integer',
     readonly value: number
 }
 
-const integer = (v: number): Integer => ({kind: 'integer', value: v})
+const integer = (v: number): Integer => ({kind: 'integer', value: v});
 
-interface Add
-{
-    readonly kind:'add'
+type Add = {
+    readonly kind:'add',
     readonly left: Node,
     readonly right: Node
 }
 
-const add = (left: Node, right: Node): Add => ({kind: 'add', left:left, right: right})
+const add = (left: Node, right: Node): Add => ({kind: 'add', left:left, right: right});
 
-type Node = Integer | Add
+type Node = Integer | Add;
+
 
 const testVisitor = (n: Node): string => {
     switch (n.kind) {
@@ -23,6 +22,15 @@ const testVisitor = (n: Node): string => {
         case 'add': return '+';
     }
 }
+
+// Why types?
+// Integer and Add are completely decoupled.
+// If we aren't operating in an OO paradigm in which an object holds together data and methods,
+// then there will not be any/much need to couple things together with an interface, or use an interface.
+// Also, classes cannot implement types, which makes it impossible for other parts of the system to
+// take out a dependency on your interface (hence, you don't need to worry about Liskof)
+//    class abc implements Add {}
+
 
 describe('test visitor fp', () => {
 

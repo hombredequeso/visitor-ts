@@ -4,11 +4,14 @@ Sample code for the purpose of illustrating AST algorithms with:
 * object-oriented paradigm, using visitor design pattern
 * functional paradigm
 
-The initial point of this code was to help illustrate how the principles of object oriented programming create the conditions necessary for inventing the visitor design pattern. When the same thing is implemented in a functional program, it is not necessary to have a design pattern using double dispatch to implement AST calculations. One may say that the visitor design pattern owes it existence to object-oriented programming.
+The initial point of this code was to help illustrate how the principles of object oriented programming create the conditions necessary for inventing the visitor design pattern. When the same thing is implemented in a functional program, it is not necessary to have a design pattern using double dispatch to implement AST calculations. One may say that the visitor design pattern owes it existence to problems created by combining data and methods on an object for the purposes of managing state, aka object-oriented programming.
 
 Visitor Design Pattern
 
 The visitor design pattern is already explained well elsewhere. 
+[Visitor Pattern (represent operation on object structure)](https://www.gofpattern.com/behavioral/patterns/visitor-pattern.php)Includes a diagram  of the interface/class structure.
+[Visitor pattern - Wikipedia](https://en.wikipedia.org/wiki/Visitor_pattern#UML_class_and_sequence_diagram) Class and sequence diagrams. Either indicating the complexity of the pattern itself, or the problems with UML - depending on your state of mind at any given time.
+
 [Visitor](https://refactoring.guru/design-patterns/visitor) provides a good overview.
 [Clash of Styles series](https://vkontech.com/clash-of-styles-part-1-operations-matrix-via-oop/), a six part series (or seven including the [addendum on double dispatch](https://vkontech.com/polymorphism-on-steroids-dive-into-multiple-dispatch-multimethods/)) is also helpful in stepping through the elements of the visitor pattern (finally in part 4!). It also compares the oo pattern with an fp implementation along the way.
 
@@ -57,4 +60,5 @@ Add <|-- Node
 In terms of dependencies:
 * Integer is not dependent on Node
 * Add is not dependent on Node
-* 
+* A node is either an Integer or Add, but both Integer and Add can be changed at will without any base class implications.
+* if Integer and Add are 'type' instead of 'interface', there is no chance of anyone using your type as a base class, coupling it into their system.

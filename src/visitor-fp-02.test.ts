@@ -1,4 +1,4 @@
-interface Integer
+type Integer =
 {
     readonly kind:'integer'
     readonly value: number
@@ -6,7 +6,7 @@ interface Integer
 
 const integer = (v: number): Integer => ({kind: 'integer', value: v})
 
-interface Add
+type Add =
 {
     readonly kind:'add'
     readonly left: Node,
@@ -15,12 +15,23 @@ interface Add
 
 const add = (left: Node, right: Node): Add => ({kind: 'add', left:left, right: right})
 
-type Node = Integer | Add
+type Subtract = {
+  readonly kind: 'subtract',
+  readonly left: Node,
+  readonly right: Node
+}
 
+const subtract = (left: Node, right: Node): Subtract => ({kind: 'subtract', left:left, right: right})
+
+type Node = Integer | Add | Subtract
+
+
+// When adding Subtract, an error shows up here becasue 'subtract' is not included (on 'string')
 const testVisitor = (n: Node): string => {
     switch (n.kind) {
         case 'integer': return n.value.toString();
         case 'add': return '+';
+        case 'subtract': return '-'
     }
 }
 
@@ -29,10 +40,12 @@ describe('test visitor fp', () => {
     const left: Integer = integer(7)
     const right: Integer = integer(3);
     const addNode: Add = add(left, right);
+    const subtractNode: Subtract = subtract(left, right);
 
     test.each([
         [integer(7), '7'],
         [addNode, '+'],
+        [subtractNode, '-']
     ])('is equal', (node:Node, expectedResult) => {
         const result = testVisitor(node);
         expect(result).toEqual(expectedResult)
@@ -58,6 +71,23 @@ const graph1 = add(
 )
 
 
+const graph2 = add(
+    integer(1),
+    add(
+        add(
+            integer(2),
+            integer(4)
+        ),
+        subtract(
+            integer(8),
+            add(
+                integer(16),
+                integer(32)
+            )
+        )
+    )
+)
+
 
 // New visitor is a ... function(s) :-)
 const displayIntegerNode = (n: Integer): string =>
@@ -66,10 +96,14 @@ const displayIntegerNode = (n: Integer): string =>
 const displayAddNode = (n: Add): string =>
     `${displayVisitor(n.left)}+${displayVisitor(n.right)}`
 
+const displaySubtractNode = (n: Subtract): string =>
+    `${displayVisitor(n.left)}-${displayVisitor(n.right)}`
+
 const displayVisitor = (n: Node): string => {
     switch (n.kind) {
         case 'integer': return displayIntegerNode(n);
         case 'add': return displayAddNode(n);
+        case 'subtract': return displaySubtractNode(n);
     }
 }
 
@@ -82,7 +116,8 @@ describe('displayVisitor fp', () => {
     test.each([
         [integer(7), '7'],
         [addNode, '7+3'],
-        [graph1, '1+2+4+8+16+32']
+        [graph1, '1+2+4+8+16+32'],
+        [graph2, '1+2+4+8-16+32'],
     ])('is equal', (node, expectedResult) => {
         const result = displayVisitor(node);
         expect(result).toEqual(expectedResult)
@@ -96,10 +131,14 @@ describe('displayVisitor fp', () => {
 const displayAddNodeWithBrackets = (n: Add): string =>
     `(${displayWithBracketsVisitor(n.left)}+${displayWithBracketsVisitor(n.right)})`
 
+const displaySubtractNodeWithBrackets = (n: Subtract): string =>
+    `(${displayWithBracketsVisitor(n.left)}-${displayWithBracketsVisitor(n.right)})`
+
 const displayWithBracketsVisitor = (n: Node): string => {
     switch (n.kind) {
         case 'integer': return displayIntegerNode(n);
         case 'add': return displayAddNodeWithBrackets(n);
+        case 'subtract': return displaySubtractNodeWithBrackets(n);
     }
 }
 
@@ -126,6 +165,7 @@ const depthFirstSearchInOrderIteration = (n: Node): Array<Node> => {
     switch (n.kind) {
         case 'integer': return [n]
         case 'add': return [...depthFirstSearchInOrderIteration(n.left), n, ...depthFirstSearchInOrderIteration(n.right)];
+        case 'subtract': return [...depthFirstSearchInOrderIteration(n.left), n, ...depthFirstSearchInOrderIteration(n.right)];
     }
 }
 
@@ -134,6 +174,7 @@ const displayVisitor2 = (n: Node): string => {
     switch (n.kind) {
         case 'integer': return n.value.toString();
         case 'add': return '+';
+        case 'subtract': return '-';
     };
 }
 

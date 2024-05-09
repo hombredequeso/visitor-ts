@@ -1,9 +1,6 @@
 interface Visitor {
     visitInteger(n: Integer): void
     visitAdd(n: Add): void
-
-    // alternatively, implement a runtime typesystem ans just have:
-    // visit(n: Node): void
 }
 
 interface Node {
@@ -43,6 +40,16 @@ class TestVisitor implements Visitor {
         this.output = this.output + '+';
     }
 }
+
+// A few notes:
+// * Integer and add are coupled by implementing Visitor.
+// * the implementions of Add and Node need to make public any state/methods required by the visitor.
+//   If this is just methods, then it probably fits within the realm of OO as intended.
+//   If it exposes the state of the object, then while it is common modern-OO, it starts to break
+//   the original intention of OO, that the object is sent messages, and no one knows/cares about it's state.
+// * lines of code isn't everything, but a near fp version of this is 24 lines long.
+// * while lines of code isn't everything, what is responsible for the extra lines is largely the need to
+//   do a double-dispatch, i.e. call a method (obj.Visit(visitor), which in turn calls another method and passes 'this' to it)
 
 describe('visitor oo', () => {
 
