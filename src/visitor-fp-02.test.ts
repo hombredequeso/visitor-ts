@@ -263,11 +263,13 @@ const depthFirstSearchGeneratizedIteration = (n: Node): Array<NodeIteration> => 
 
 const calculateIntegerNode = (n: Integer): number => n.value;
 const calculateAddNode = (n: Add): number => calculate(n.left) + calculate(n.right);
+const calculateSubtractNode = (n: Subtract): number => calculate(n.left) - calculate(n.right);
 
 const calculate = (n: Node): number => {
     switch (n.kind) {
         case 'integer': return calculateIntegerNode(n);
         case 'add': return calculateAddNode(n);
+        case 'subtract': return calculateSubtractNode(n);
     }
 }
 
@@ -293,6 +295,11 @@ const getLongestPathLengthR = (n: Node, currentLength: number): number => {
             return currentLength + 1;
         }
         case 'add': {
+            const leftLength = getLongestPathLengthR(n.left, currentLength + 1)
+            const rightLength = getLongestPathLengthR(n.left, currentLength + 1)
+            return Math.max(leftLength, rightLength);
+        }
+        case 'subtract': {
             const leftLength = getLongestPathLengthR(n.left, currentLength + 1)
             const rightLength = getLongestPathLengthR(n.left, currentLength + 1)
             return Math.max(leftLength, rightLength);
