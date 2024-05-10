@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc",
+    "clean": "rm -rf ./node_modules; rm -rf ./dist"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
