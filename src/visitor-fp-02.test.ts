@@ -216,6 +216,7 @@ const visitS = (n: Node, s: string): string => {
     switch (n.kind) {
         case 'integer': return s + n.value;
         case 'add': return s + '+';
+        case 'subtract': return s + '-'
     };
 }
 
@@ -238,6 +239,13 @@ const depthFirstSearchGeneratizedIteration = (n: Node): Array<NodeIteration> => 
     switch (n.kind) {
         case 'integer': return [[n, 'onEnter'], [n, 'onNode'], [n, 'onExit']]
         case 'add': return [
+            [n, 'onEnter'],
+            ...depthFirstSearchGeneratizedIteration(n.left), 
+            [n, 'onNode'], 
+            ...depthFirstSearchGeneratizedIteration(n.right),
+            [n, 'onExit']
+        ];
+        case 'subtract': return [
             [n, 'onEnter'],
             ...depthFirstSearchGeneratizedIteration(n.left), 
             [n, 'onNode'], 
