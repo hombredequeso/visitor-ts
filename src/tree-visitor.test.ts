@@ -2,6 +2,7 @@
 import { number } from 'fp-ts';
 import * as S from 'fp-ts/State'
 import {State} from 'fp-ts/State'
+import { last } from 'fp-ts/lib/ReadonlyNonEmptyArray';
 import { flow } from 'fp-ts/lib/function'
 
 type Value = number;
@@ -150,61 +151,6 @@ describe('traverse', () => {
         expect(result).toEqual({log: expectedResult});
     })
 
-
-    // test('get all paths non-recursive', () => {
-    //     const node1: Node = {value: 1, children: []};
-    //     const node2: Node = {value: 2, children: []};
-    //     const node3: Node = {value: 3, children: []};
-
-    //     const node4: Node = {value: 4, children: [node1, node2, node3]}
-    //     const node5: Node = {value: 5, children: [node4]};
-
-
-
-    //     const depthFirstTraverse = (n: Node, visitors: Visitors, s: VisitState): VisitState => {
-    //         let nodeStack: Node[] = [n];
-    //         let currentState: VisitState = s;
-    //         while (nodeStack.length > 0) {
-    //             let currentNode = nodeStack[length - 1];
-    //             // operate on currentNode
-    //             // const entryVisitState: VisitState = visitors.onEntry(currentState, currentNode);
-    //             let nextChild = currentNode.children[0]
-    //         }
-
-    //         const entryVisitState: VisitState = visitors.onEntry(s, n);
-    //         const childTraversals: VisitState = n.children.reduce(
-    //             (prevState, child) => depthFirstTraverse(child, visitors, prevState), entryVisitState);
-    //         const exitVisitState: VisitState = visitors.onExit(childTraversals, n);
-    //         return exitVisitState;
-    //     }
-
-    //     const visitors: Visitors = {
-    //         onEntry: function (visitState: VisitState, node: Node): VisitState {
-    //             const newLog = `enter-${node.value}`
-    //             const outLogs = visitState.log.concat([newLog]);
-    //             return {log: outLogs}
-    //         },
-    //         onExit: function (visitState: VisitState, node: Node): VisitState {
-    //             const newLog = `exit-${node.value}`
-    //             const outLogs = visitState.log.concat([newLog]);
-    //             return {log: outLogs}
-    //         }
-    //     }
-
-    //     const result = depthFirstTraverse(node5, visitors, {log: []});
-    //     const expectedResult =          
-    //         [
-    //             'enter-5', 
-    //             'enter-4',
-    //             'enter-1', 'exit-1',
-    //             'enter-2', 'exit-2',
-    //             'enter-3', 'exit-3',
-    //             'exit-4',  
-    //             'exit-5'
-    //         ];
-
-    //     expect(result).toEqual({log: expectedResult});
-    // })
 
     interface NodeG<T> {
         value: T,

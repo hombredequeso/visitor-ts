@@ -62,3 +62,13 @@ In terms of dependencies:
 * Add is not dependent on Node
 * A node is either an Integer or Add, but both Integer and Add can be changed at will without any base class implications.
 * if Integer and Add are 'type' instead of 'interface', there is no chance of anyone using your type as a base class, coupling it into their system.
+
+
+# Why types over interface?
+
+Integer and Add are completely decoupled.
+If we aren't operating in an OO paradigm in which an object holds together data and methods,
+then there will not be any/much need to couple things together with an interface, or use an interface.
+Also, classes cannot implement types, which makes it impossible for other parts of the system to
+take out a dependency on your interface (hence, you don't need to worry about Liskof)
+   class abc implements Add {}

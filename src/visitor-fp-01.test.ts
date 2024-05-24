@@ -15,7 +15,6 @@ const add = (left: Node, right: Node): Add => ({kind: 'add', left:left, right: r
 
 type Node = Integer | Add;
 
-
 const testVisitor = (n: Node): string => {
     switch (n.kind) {
         case 'integer': return n.value.toString();
@@ -23,32 +22,7 @@ const testVisitor = (n: Node): string => {
     }
 }
 
-// Why types?
-// Integer and Add are completely decoupled.
-// If we aren't operating in an OO paradigm in which an object holds together data and methods,
-// then there will not be any/much need to couple things together with an interface, or use an interface.
-// Also, classes cannot implement types, which makes it impossible for other parts of the system to
-// take out a dependency on your interface (hence, you don't need to worry about Liskof)
-//    class abc implements Add {}
-
-
-describe('test visitor fp', () => {
-
-    const left: Integer = integer(7)
-    const right: Integer = integer(3);
-    const addNode: Add = add(left, right);
-
-    test.each([
-        [integer(7), '7'],
-        [addNode, '+'],
-    ])('is equal', (node:Node, expectedResult) => {
-        const result = testVisitor(node);
-        expect(result).toEqual(expectedResult)
-    })
-})
-
-
-const graph1 = add(
+const sampleGraph1 = add(
     integer(1),
     add(
         add(
@@ -65,7 +39,20 @@ const graph1 = add(
     )
 )
 
+describe('test visitor fp', () => {
 
+    const left: Integer = integer(7)
+    const right: Integer = integer(3);
+    const addNode: Add = add(left, right);
+
+    test.each([
+        [integer(7), '7'],
+        [addNode, '+'],
+    ])('is equal', (node:Node, expectedResult) => {
+        const result = testVisitor(node);
+        expect(result).toEqual(expectedResult)
+    })
+})
 
 // New visitor is a ... function(s) :-)
 const displayIntegerNode = (n: Integer): string =>
@@ -81,6 +68,8 @@ const displayVisitor = (n: Node): string => {
     }
 }
 
+
+
 describe('displayVisitor fp', () => {
 
     const node1 = integer(7);
@@ -90,16 +79,14 @@ describe('displayVisitor fp', () => {
     test.each([
         [integer(7), '7'],
         [addNode, '7+3'],
-        [graph1, '1+2+4+8+16+32']
+        [sampleGraph1, '1+2+4+8+16+32']
     ])('is equal', (node, expectedResult) => {
         const result = displayVisitor(node);
         expect(result).toEqual(expectedResult)
     })
 })
 
-
 // Display visitor with brackets:
-
 
 const displayAddNodeWithBrackets = (n: Add): string =>
     `(${displayWithBracketsVisitor(n.left)}+${displayWithBracketsVisitor(n.right)})`
@@ -120,7 +107,7 @@ describe('displayWithBracketsVisitor fp', () => {
     test.each([
         [integer(7), '7'],
         [addNode, '(7+3)'],
-        [graph1, '(1+((2+4)+(8+(16+32))))']
+        [sampleGraph1, '(1+((2+4)+(8+(16+32))))']
     ])('is equal', (node, expectedResult) => {
         const result = displayWithBracketsVisitor(node);
         expect(result).toEqual(expectedResult)
@@ -128,7 +115,8 @@ describe('displayWithBracketsVisitor fp', () => {
 })
 
 
-// Display visitor with iteration separated out:
+// Display visitor gathing nodes in depth-first fashion in top visitor function.
+// (actual operation is then performed on Array<Node>)
 
 const depthFirstSearchInOrderIteration = (n: Node): Array<Node> => {
     switch (n.kind) {
@@ -154,7 +142,7 @@ describe('displayVisitor2 fp', () => {
     test.each([
         [integer(7), '7'],
         [addNode, '7+3'],
-        [graph1, '1+2+4+8+16+32']
+        [sampleGraph1, '1+2+4+8+16+32']
     ])('is equal', (node, expectedResult) => {
         const allNodes = depthFirstSearchInOrderIteration(node);
         const visitorsResult = allNodes.map(n => displayVisitor2(n));
@@ -164,7 +152,8 @@ describe('displayVisitor2 fp', () => {
     })
 })
 
-// Using generator:
+// Using generator. Don't do this. Just for sightseeing purposes really.
+// Again, is turning the tree into a depth-first array.
 
 function* addIterator(n: Add) : Generator<Node, void, unknown>{
     yield* treeIterator(n.left);
@@ -239,7 +228,7 @@ describe('calculate fp', () => {
     test.each([
         [integer(7), 7],
         [addNode, 10],
-        [graph1, 63]
+        [sampleGraph1, 63]
     ])('is equal', (node, expectedResult) => {
         const result = calculate(node);
         expect(result).toEqual(expectedResult)
